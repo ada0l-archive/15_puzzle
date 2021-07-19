@@ -1,0 +1,19 @@
+html, body {
+    background-color: #fff;
+    color: #4A465D;
+    font-family: 'Roboto', sans-serif;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: 50px;
+    gap: 20px;
+}
+
+.footer p {
+    font-size: 13px;
+}

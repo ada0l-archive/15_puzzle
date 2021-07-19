@@ -85,9 +85,10 @@ class GridGenerator {
 
 class Grid {
 
-    constructor(length, table_html) {
+    constructor(length, table_html, win_function) {
         this.length = length;
         this.table_html = table_html;
+        this.win_function = win_function;
     }
 
     render() {
@@ -188,12 +189,17 @@ class CellClickListener {
             }
         }
         if (grid.isVictory()) {
-            alert("WIN");
+            grid.win_function();
         }
     }
 }
 
-let grid = (new Grid(4, document.getElementById('game')));
+let winModal = new Modal("<img src=\"cup_icon.jpg\" /><p>Good job!</p>");
+winModal.render();
+
+let grid = (new Grid(4, document.getElementById('game'), () => {
+    winModal.show();
+}));
 grid.render();
 
 document.getElementById('game-btn-shuffle').onclick = ((event) => {
