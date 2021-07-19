@@ -28,8 +28,8 @@ html, body {
 .game-name h1 {
     color: #E6B172;
     text-shadow: 2px 2px 0px #FE747D, 
-                4px 4px 0px #FF8B65, 
-                6px 6px 0px #FDC9B3;
+                 4px 4px 0px #FF8B65, 
+                 6px 6px 0px #FDC9B3;
 }
 
 #game td {

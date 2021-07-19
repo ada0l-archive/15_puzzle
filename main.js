@@ -21,7 +21,6 @@ class Util {
         p2.insertBefore(n1, p2.children[i2]);
     }
 
-
     static shuffle(arr) {
         for (let i = 0; i < arr.length; ++i) {
             let j = Math.floor(Math.random() * i);
@@ -30,6 +29,56 @@ class Util {
             arr[j] = tmp;
         }
         return arr;
+    }
+
+    static random(a, b) {
+        return Math.floor(Math.random() * (b - a + 1)) + a;
+    }
+
+}
+
+class GridGenerator {
+
+    static getSolved(n) {
+        var result = [];
+        for (let i = 0; i < n; ++i) {
+            result.push(new Array(n));
+        }
+        for (let i = 0; i < result.length; ++i) {
+            for (let j = 0; j < result[i].length; ++j) {
+                result[i][j] = j + n * i + 1;
+            }
+        }
+        return result;
+    }
+
+    static getShuffled(n, number_of_iterations) {
+        let result = GridGenerator.getSolved(n);
+        let x = result.length - 1;
+        let y = result.length - 1;
+
+        function get_range(a) {
+            if (1 <= a && a < n - 1) {
+                return [-1, 1];
+            } else if (1 <= a) {
+                return [-1, 0];
+            } else if (a < n - 1) {
+                return [0, 1];
+            }
+        }
+
+        for (let i = 0; i < number_of_iterations; ++i) {
+            let new_index_x = x + Util.random.apply(this, get_range(x));
+            let new_index_y = y + Util.random.apply(this, get_range(y));
+
+            let tmp = result[new_index_x][new_index_y];
+            result[new_index_x][new_index_y] = result[x][y];
+            result[x][y] = tmp;
+
+            x = new_index_x;
+            y = new_index_y;
+        }
+        return result;
     }
 
 }
@@ -47,41 +96,31 @@ class Grid {
             for (let j = 0; j < this.length; ++j) {
                 let cell = document.createElement('td');
                 cell.addEventListener('click', (new CellClickListener(this)).action);
-                let index = j + this.length * i + 1;
-                if (index != this.length * this.length) {
-                    cell.innerText = index;
-                    cell.classList = [];
-                } else {
-                    cell.classList.add('empty');
-                }
                 row.appendChild(cell)
             }
             this.table_html.appendChild(row);
         }
+
+        this.fillCells(GridGenerator.getSolved(this.length));
+    }
+
+    fillCells(data) {
+        for (let i = 0; i < this.length; ++i) {
+            for (let j = 0; j < this.length; ++j) {
+                let cell = this.getCell(j, i);
+                if (data[i][j] != this.length * this.length) {
+                    cell.innerText = data[i][j];
+                    cell.classList = [];
+                } else {
+                    cell.innerText = '';
+                    cell.classList.add('empty');
+                }
+            }
+        }
     }
 
     shuffle() {
-        let numbers = [];
-
-        for (let i = 0; i < this.length * this.length; ++i) {
-            numbers.push(i + 1);
-        }
-
-        Util.shuffle(numbers);
-
-        for (let i = 0; i < numbers.length; ++i) {
-            let x = i % this.length;
-            let y = (i - x) / this.length;
-            let cell =  this.getCell(x, y);
-            
-            if (numbers[i] != this.length * this.length) {
-                cell.innerText = numbers[i];
-                cell.classList = [];
-            } else {
-                cell.innerText = '';
-                cell.classList.add('empty');
-            }
-        }
+        this.fillCells(GridGenerator.getShuffled(this.length, 100));
     }
 
     getCell(x, y) {
@@ -114,18 +153,18 @@ class Grid {
         }
     }
 
-    static getNeighbors(grid, element) {
+    getNeighbors(element) {
         let dx = [-1, 0, 1,  0];
         let dy = [ 0, 1, 0, -1];
         let neighbors = []
-        let indexes = this.getIndexes(element);
+        let indexes = Grid.getIndexes(element);
 
         for (let i = 0; i < dx.length; ++i) {
             let x = indexes['x'] + dx[i];
             let y = indexes['y'] + dy[i];
-            if ((0 <= x && x < grid.length) && (0 <= y && y < grid.length)) {
+            if ((0 <= x && x < this.length) && (0 <= y && y < this.length)) {
                 neighbors.push(
-                    grid.getCell(x, y)
+                    this.getCell(x, y)
                 );
             }
         }
@@ -142,7 +181,7 @@ class CellClickListener {
     }
 
     action(event) {
-        let neighbors = Grid.getNeighbors(grid, event.target);
+        let neighbors = grid.getNeighbors(event.target);
         for (let i = 0; i < neighbors.length; ++i) {
             if (neighbors[i].classList.contains('empty')) {
                 Util.swapNodes(event.target, neighbors[i]);
@@ -154,13 +193,9 @@ class CellClickListener {
     }
 }
 
-/*
- *
- */
-
 let grid = (new Grid(4, document.getElementById('game')));
 grid.render();
 
 document.getElementById('game-btn-shuffle').onclick = ((event) => {
     grid.shuffle();
-})
+});
