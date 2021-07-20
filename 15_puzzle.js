@@ -137,12 +137,12 @@ class Grid {
             for (let j = 0; j < this.length; ++j) {
                 let cell = this.getCell(j, i);
                 if (i === this.length - 1 && j === this.length - 1) {
-                    if (cell.innerText !== '') {
+                    if (cell.innerText != '') {
                         return false;
                     }
                 } else {
                     let index = j + this.length * i + 1;
-                    if (cell.innerText !== index) {
+                    if (cell.innerText != index) {
                         return false;
                     }
                 }

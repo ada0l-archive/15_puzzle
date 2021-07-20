@@ -11,7 +11,7 @@ class AnimationCSS {
     static fadeIn(element) {
         this.makeAndRestore('transition', element, () => {
             element.style.transition = 'opacity 0.2s';
-            element.style.opacity = "0.7";
+            element.style.opacity = "0.6";
         })
     }
 

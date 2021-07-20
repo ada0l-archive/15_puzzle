@@ -40,6 +40,7 @@
     winModal.render();
 
     let grid = (new Grid(4, document.getElementById('game'), () => {
+        console.log("win");
         winModal.show();
     }));
     grid.render();
