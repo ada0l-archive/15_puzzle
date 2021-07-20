@@ -91,6 +91,8 @@ class Grid {
                     let neighbors = this.getNeighbors(event.target);
                     for (let i = 0; i < neighbors.length; ++i) {
                         if (neighbors[i].classList.contains('empty')) {
+                            AnimationCSS.fadeInFadeOut(event.target);
+                            AnimationCSS.fadeInFadeOut(neighbors[i]);
                             Util.swapNodes(event.target, neighbors[i]);
                         }
                     }
@@ -110,6 +112,7 @@ class Grid {
         for (let i = 0; i < this.length; ++i) {
             for (let j = 0; j < this.length; ++j) {
                 let cell = this.getCell(j, i);
+                AnimationCSS.fadeInFadeOut(cell);
                 if (data[i][j] !== this.length * this.length) {
                     cell.innerText = data[i][j];
                     cell.classList = [];
