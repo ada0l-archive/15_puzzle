@@ -12,24 +12,24 @@ class Modal {
         divModal.classList.add('modal-hide');
         this.divModal = divModal;
 
-        let divModaDialog = document.createElement('div');
-        divModaDialog.classList.add('modal-dialog');
+        let divModalDialog = document.createElement('div');
+        divModalDialog.classList.add('modal-dialog');
 
         let divModalBtnClose = document.createElement('div');
         divModalBtnClose.classList.add('modal-btn-close');
         divModalBtnClose.innerText = 'x';
-        divModalBtnClose.addEventListener('click', (new ModalBtnCloseListener(this)).action);
+        divModalBtnClose.addEventListener('click', (new ModalBtnCloseListener()).action);
 
         let divModalContent = document.createElement('div');
         divModalContent.classList.add('modal-content');
         divModalContent.innerHTML = this.content;
 
-        divModaDialog.insertAdjacentElement('beforeEnd', divModalBtnClose);
-        divModaDialog.insertAdjacentElement('beforeEnd', divModalContent);
+        divModalDialog.insertAdjacentElement('beforeend', divModalBtnClose);
+        divModalDialog.insertAdjacentElement('beforeend', divModalContent);
 
-        divModal.insertAdjacentElement('beforeEnd', divModaDialog);
+        divModal.insertAdjacentElement('beforeend', divModalDialog);
 
-        modalContainer.insertAdjacentElement('beforeEnd', divModal);
+        modalContainer.insertAdjacentElement('beforeend', divModal);
     }
 
     show() {

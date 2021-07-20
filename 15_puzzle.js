@@ -1,15 +1,16 @@
 class Util {
 
     static swapNodes(n1, n2) {
-        var p1 = n1.parentNode;
-        var p2 = n2.parentNode;
-        var i1, i2;
-        for (var i = 0; i < p1.children.length; i++) {
+        let i;
+        const p1 = n1.parentNode;
+        const p2 = n2.parentNode;
+        let i1, i2;
+        for (i = 0; i < p1.children.length; i++) {
             if (p1.children[i].isEqualNode(n1)) {
                 i1 = i;
             }
         }
-        for (var i = 0; i < p2.children.length; i++) {
+        for (i = 0; i < p2.children.length; i++) {
             if (p2.children[i].isEqualNode(n2)) {
                 i2 = i;
             }
@@ -21,16 +22,6 @@ class Util {
         p2.insertBefore(n1, p2.children[i2]);
     }
 
-    static shuffle(arr) {
-        for (let i = 0; i < arr.length; ++i) {
-            let j = Math.floor(Math.random() * i);
-            let tmp = arr[i];
-            arr[i] = arr[j];
-            arr[j] = tmp;
-        }
-        return arr;
-    }
-
     static random(a, b) {
         return Math.floor(Math.random() * (b - a + 1)) + a;
     }
@@ -40,7 +31,7 @@ class Util {
 class GridGenerator {
 
     static getSolved(n) {
-        var result = [];
+        let result = [];
         for (let i = 0; i < n; ++i) {
             result.push(new Array(n));
         }
@@ -96,7 +87,17 @@ class Grid {
             let row = document.createElement('tr');
             for (let j = 0; j < this.length; ++j) {
                 let cell = document.createElement('td');
-                cell.addEventListener('click', (new CellClickListener(this)).action);
+                cell.addEventListener('click', (event) => {
+                    let neighbors = this.getNeighbors(event.target);
+                    for (let i = 0; i < neighbors.length; ++i) {
+                        if (neighbors[i].classList.contains('empty')) {
+                            Util.swapNodes(event.target, neighbors[i]);
+                        }
+                    }
+                    if (this.isVictory()) {
+                        this.win_function();
+                    }
+                });
                 row.appendChild(cell)
             }
             this.table_html.appendChild(row);
@@ -109,7 +110,7 @@ class Grid {
         for (let i = 0; i < this.length; ++i) {
             for (let j = 0; j < this.length; ++j) {
                 let cell = this.getCell(j, i);
-                if (data[i][j] != this.length * this.length) {
+                if (data[i][j] !== this.length * this.length) {
                     cell.innerText = data[i][j];
                     cell.classList = [];
                 } else {
@@ -132,13 +133,13 @@ class Grid {
         for (let i = 0; i < this.length; ++i) {
             for (let j = 0; j < this.length; ++j) {
                 let cell = this.getCell(j, i);
-                if (i == this.length - 1 && j == this.length - 1) {
-                    if (cell.innerText != '') {
+                if (i === this.length - 1 && j === this.length - 1) {
+                    if (cell.innerText !== '') {
                         return false;
                     }
                 } else {
                     let index = j + this.length * i + 1;
-                    if (cell.innerText != index) {
+                    if (cell.innerText !== index) {
                         return false;
                     }
                 }
@@ -164,9 +165,7 @@ class Grid {
             let x = indexes['x'] + dx[i];
             let y = indexes['y'] + dy[i];
             if ((0 <= x && x < this.length) && (0 <= y && y < this.length)) {
-                neighbors.push(
-                    this.getCell(x, y)
-                );
+                neighbors.push(this.getCell(x, y));
             }
         }
 
@@ -175,33 +174,6 @@ class Grid {
 
 }
 
-class CellClickListener {
-
-    constructor(grid) {
-        this.grid = grid;
-    }
-
-    action(event) {
-        let neighbors = grid.getNeighbors(event.target);
-        for (let i = 0; i < neighbors.length; ++i) {
-            if (neighbors[i].classList.contains('empty')) {
-                Util.swapNodes(event.target, neighbors[i]);
-            }
-        }
-        if (grid.isVictory()) {
-            grid.win_function();
-        }
-    }
-}
-
-let winModal = new Modal("<img src=\"cup_icon.jpg\" /><p>Good job!</p>");
-winModal.render();
-
-let grid = (new Grid(4, document.getElementById('game'), () => {
-    winModal.show();
-}));
-grid.render();
-
-document.getElementById('game-btn-shuffle').onclick = ((event) => {
+document.getElementById('game-btn-shuffle').onclick = (() => {
     grid.shuffle();
 });
